@@ -1,0 +1,630 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 5,
+  "metadata": {
+    "kernelspec": {
+      "display_name": "Python 3",
+      "language": "python",
+      "name": "python3"
+    },
+    "language_info": {
+      "codemirror_mode": {
+        "name": "ipython",
+        "version": 3
+      },
+      "file_extension": ".py",
+      "mimetype": "text/x-python",
+      "name": "python",
+      "nbconvert_exporter": "python",
+      "pygments_lexer": "ipython3",
+      "version": "3.8.8"
+    },
+    "colab": {
+      "name": "Untitled.ipynb",
+      "provenance": []
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "-tEgIJJ3sTqi"
+      },
+      "source": [
+        "# **Read in and Explore the data**"
+      ],
+      "id": "-tEgIJJ3sTqi"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "971f285c"
+      },
+      "source": [
+        "import numpy as np\n",
+        "import pandas as pd\n",
+        "import matplotlib.pyplot as plt\n",
+        "import seaborn as sns\n",
+        "from sklearn.linear_model import LinearRegression\n",
+        "import patsy\n",
+        "from sklearn.metrics import mean_squared_error\n",
+        "from math import sqrt\n",
+        "\n",
+        "\n",
+        "%config InlineBackend.figure_format = 'svg'\n",
+        "%matplotlib inline "
+      ],
+      "id": "971f285c",
+      "execution_count": 34,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "fa77b814"
+      },
+      "source": [
+        "## Read in the Tarin_data set\n",
+        "stock_train = pd.read_csv('Tadawul_stcks.csv')\n",
+        "stock_train"
+      ],
+      "id": "fa77b814",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "0mW1yhscBhro"
+      },
+      "source": [
+        "## Read in the Test_data set\n",
+        "stock_test = pd.read_csv('Tadawul_stcks_23_4.csv')\n",
+        "stock_test"
+      ],
+      "id": "0mW1yhscBhro",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "0bfd7999"
+      },
+      "source": [
+        "stock_train.info()"
+      ],
+      "id": "0bfd7999",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "g9X7S41Vm2DK"
+      },
+      "source": [
+        "stock_test.info()"
+      ],
+      "id": "g9X7S41Vm2DK",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "XQtflN_7njdN"
+      },
+      "source": [
+        "stock_train.shape"
+      ],
+      "id": "XQtflN_7njdN",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "jNgOAc53nuCk"
+      },
+      "source": [
+        "stock_test.shape"
+      ],
+      "id": "jNgOAc53nuCk",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "180b56be"
+      },
+      "source": [
+        "stock_train.describe()"
+      ],
+      "id": "180b56be",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "X9TDzutVuMHC"
+      },
+      "source": [
+        "# **Data Cleaning**"
+      ],
+      "id": "X9TDzutVuMHC"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "6af5e082"
+      },
+      "source": [
+        "stock_train.dropna(inplace = True)"
+      ],
+      "id": "6af5e082",
+      "execution_count": 14,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "7a1c80bc"
+      },
+      "source": [
+        "stock_train.open[stock_train.open>47.0]= stock_train.open.median()"
+      ],
+      "id": "7a1c80bc",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "eee45063"
+      },
+      "source": [
+        "stock_train.describe()"
+      ],
+      "id": "eee45063",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "3c6a84bf"
+      },
+      "source": [
+        "stock_train.high[stock_train.high>50]= stock_train.high.median()"
+      ],
+      "id": "3c6a84bf",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "236bf0fc"
+      },
+      "source": [
+        "stock_train.low[stock_train.low>47.0]= stock_train.low.median()"
+      ],
+      "id": "236bf0fc",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "083a37f0"
+      },
+      "source": [
+        "stock_train.close[stock_train.close>55]= stock_train.close.median()"
+      ],
+      "id": "083a37f0",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "56857cd3"
+      },
+      "source": [
+        "stock_train.change[stock_train.change>50]= stock_train.close.median()\n"
+      ],
+      "id": "56857cd3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "2ad66026"
+      },
+      "source": [
+        "stock_train.change[stock_train.change<-50]= stock_train.close.median()"
+      ],
+      "id": "2ad66026",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "379d9211"
+      },
+      "source": [
+        "stock_train.perc_Change[stock_train.perc_Change>99.9]= stock_train.perc_Change.median()\n",
+        "stock_train.perc_Change[stock_train.perc_Change<-99.9]= stock_train.perc_Change.median()"
+      ],
+      "id": "379d9211",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "GE1-3rO_55u1"
+      },
+      "source": [
+        "stock_train.columns = stock_train.columns.str.replace(' ', '')"
+      ],
+      "id": "GE1-3rO_55u1",
+      "execution_count": 41,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "JPBXPUOf6GI2"
+      },
+      "source": [
+        "stock_train.no_trades[stock_train.no_trades>1500]= stock_train.no_trades.median()"
+      ],
+      "id": "JPBXPUOf6GI2",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "6197d333"
+      },
+      "source": [
+        "stock_train.describe()"
+      ],
+      "id": "6197d333",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "f4621c5e"
+      },
+      "source": [
+        "stock_train.hist(edgecolor='red', linewidth=1.2, figsize=(11, 11));"
+      ],
+      "id": "f4621c5e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "2HQ-N7MLtoPI"
+      },
+      "source": [
+        "# **Data Visualization**"
+      ],
+      "id": "2HQ-N7MLtoPI"
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "8516ca90"
+      },
+      "source": [
+        "# •\tWhat is the highest profit Sector?"
+      ],
+      "id": "8516ca90"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Bu7wxQ4yM8Sg",
+        "outputId": "c552bdaf-801d-4ef6-ffc9-8da20210d3cf"
+      },
+      "source": [
+        "stock_train[['sectoer', 'close']].max()"
+      ],
+      "id": "Bu7wxQ4yM8Sg",
+      "execution_count": 50,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "sectoer    Materials\n",
+              "close             55\n",
+              "dtype: object"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 50
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "aaca3fc1"
+      },
+      "source": [
+        "."
+      ],
+      "id": "aaca3fc1"
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "43c3bbd2"
+      },
+      "source": [
+        "# •\tWhat is the most valuable year in the Saudi stock market? "
+      ],
+      "id": "43c3bbd2"
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "0347ae25"
+      },
+      "source": [
+        "."
+      ],
+      "id": "0347ae25"
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "e9866737"
+      },
+      "source": [
+        "# •\tWhat is the lowiest valuable year in the Saudi stock market?"
+      ],
+      "id": "e9866737"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "ae908838"
+      },
+      "source": [
+        ""
+      ],
+      "id": "ae908838",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "ae89513c"
+      },
+      "source": [
+        "."
+      ],
+      "id": "ae89513c"
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "c8ebc207"
+      },
+      "source": [
+        "# •\tWhat is the percentage change in the sector, and what is the highest sector?"
+      ],
+      "id": "c8ebc207"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "55095840"
+      },
+      "source": [
+        ""
+      ],
+      "id": "55095840",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "1e2b44f3"
+      },
+      "source": [
+        "# ***predict the stocks prices***"
+      ],
+      "id": "1e2b44f3"
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "23kHiKuSjl4E"
+      },
+      "source": [
+        "# ***Regression ***"
+      ],
+      "id": "23kHiKuSjl4E"
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "0P9p2K0fjzhl"
+      },
+      "source": [
+        "## Fit a linear regression model on the train data set"
+      ],
+      "id": "0P9p2K0fjzhl"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "dGyNelUjkTkI"
+      },
+      "source": [
+        "#Separate our features from our target\n",
+        "\n",
+        "x = stock_train.loc[:,['open', 'high', 'low', 'change',]]\n",
+        "y = stock_train['close']"
+      ],
+      "id": "dGyNelUjkTkI",
+      "execution_count": 26,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "27cAuB7JkirH"
+      },
+      "source": [
+        "x.info"
+      ],
+      "id": "27cAuB7JkirH",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "ijnxIJ1jkhaX",
+        "outputId": "4ea6e6e0-73c4-4d64-c851-893c6b245264"
+      },
+      "source": [
+        "#Fit on  train dataset\n",
+        "re = LinearRegression()\n",
+        "re.fit(stock_train[['open','high', 'low', 'change']], stock_train['close'])"
+      ],
+      "id": "ijnxIJ1jkhaX",
+      "execution_count": 44,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "LinearRegression()"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 44
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "K0_laUyLBZQU",
+        "outputId": "1f2c986b-fb05-4e41-8834-c71fee6993d2"
+      },
+      "source": [
+        "#Check the R-squared value\n",
+        "re.score(stock_train[['open', 'high', 'low', 'change']], stock_train['close'])"
+      ],
+      "id": "K0_laUyLBZQU",
+      "execution_count": 36,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.8416556171903041"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 36
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "pPeHIjVwfnS9"
+      },
+      "source": [
+        "# Check the R-squared on test data\n",
+        "re.score(stock_test[['open','high', 'low', 'change']], stock_test['close'])"
+      ],
+      "id": "pPeHIjVwfnS9",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "Fe48QcCD61jn"
+      },
+      "source": [
+        "## **R-squared**"
+      ],
+      "id": "Fe48QcCD61jn"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "NuwjgEkP1fhx"
+      },
+      "source": [
+        "# Compare the actual y values in the training set with the predicted values\n",
+        "actual_train = stock_train['close']\n",
+        "predicted_train = re.predict(stock_train[['open','high', 'low', 'change']])\n",
+        "predicted_train.shape"
+      ],
+      "id": "NuwjgEkP1fhx",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "yab1Ksnf7Eg4"
+      },
+      "source": [
+        "# Check the RMSE (root mean squared error) on the training data\n",
+        "sqrt(mean_squared_error(actual_train, predicted_train))"
+      ],
+      "id": "yab1Ksnf7Eg4",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "Nyg9vc6B29pT"
+      },
+      "source": [
+        "# Compare the actual y values in the test set with the predicted values\n",
+        "actual_test = stock_test['close']\n",
+        "predicted_test = re.predict(stock_test[['open','high', 'low', 'change']])\n",
+        "predicted_test.shape"
+      ],
+      "id": "Nyg9vc6B29pT",
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
