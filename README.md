@@ -61,8 +61,8 @@ Regression is valuable to our project to make certain that the questions and goa
 
 ## Authors 
 - [@Aya11salem] (http://github.com/Alya11salem)
-- [@](https://github.com/ )
-- [@](https://github.com/)
+- [@@elaftalal] (https://github.com/elaftalal)
+- [@ِAmoraished] (https://github.com/Amoraished)
 
 ##Dataset Resource
 https://www.kaggle.com/salwaalzahrani/saudi-stock-exchange-tadawul?select=Tadawul_stcks.csv
