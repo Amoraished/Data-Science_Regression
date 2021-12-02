@@ -1,4 +1,4 @@
-# Data-Science_Regression# Regression_Project
+# Regression_Project
 Data science Project one of core element of T5 Boot camp from SDAIA Academy
 # saudi_stocke_exchange
 <p align="center" width="100%">
@@ -44,17 +44,23 @@ There are tools that will be used to achieve the goal of this study, such as:
 - Pandas
 - Matplotlib
 - Seaborn
+- math
+- sklearn.preprocessing
+- sklearn.model_selection
+- LinearRegression
+- DecisionTreeRegressor
+-  mean_squared_error
 The work will be done through Jupyter notebook.
 
 ## GOALS
 - predict the stocks prices
 - What is the highest profit section?
 - What is the most valuable year in the Saudi stock market? 
-- What is the lowiest valuable year in the Saudi stock market?
+- What is the less valuable year in the Saudi stock market?
 - What is the percentage change in the sector, and what is the highest sector?
 
 
 ## Authors 
 - [@elaftalal](https://github.com/elaftalal)
 - [@Alya ALmanqour](https://github.com/Alya11salem)
-- [@Abdullah Moraished](https://github.com/Amoraished)
+- [@Amoraished](https://github.com/Amoraished)
